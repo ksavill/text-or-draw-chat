@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e6e6e6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        #chat-container {
+            width: 800px;
+            background-color: #fff;
+            border: 2px solid #000;
+            border-radius: 10px;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            margin: 0;
+        }
+        #messages {
+            border: 2px solid #000;
+            height: 200px;
+            overflow-y: scroll;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        #input-container {
+            display: flex;
+            margin-top: 10px;
+        }
+        #input {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #000;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        #send-button {
+            padding: 10px 20px;
+            border: 2px solid #000;
+            background-color: #fff;
+            color: #000;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #send-button:hover {
+            background-color: #e0e0e0;
+        }
+        #canvas-container {
+            position: relative;
+            border: 2px solid #000;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        #canvas {
+            display: block;
+            width: 100%;
+        }
+        #send-drawing-button, #clear-canvas-button, #toggle-keypad-button, #copy-canvas-button, #leave-room-button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            border: 2px solid #000;
+            background-color: #fff;
+            color: #000;
+            border-radius: 5px;
+            cursor: pointer;
+            display: inline-block;
+        }
+        #send-drawing-button:hover, #clear-canvas-button:hover, #toggle-keypad-button:hover, #copy-canvas-button:hover, #leave-room-button:hover {
+            background-color: #e0e0e0;
+        }
+        .drawing-message {
+            margin: 10px 0;
+        }
+        .message {
+            border-radius: 5px;
+            margin-bottom: 10px;
+            padding: 10px;
+            position: relative;
+        }
+        .message .sender {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            padding: 5px 10px;
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 5px 0 5px 0;
+            font-weight: bold;
+        }
+        .system-message {
+            text-align: center;
+            font-style: italic;
+            color: #888;
+        }
+        #keypad {
+            margin-top: 10px;
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 2px;
+        }
+        .keypad-button {
+            width: 30px;
+            height: 30px;
+            border: 2px solid #000;
+            background-color: #fff;
+            text-align: center;
+            line-height: 30px;
+            cursor: pointer;
+            display: inline-block;
+        }
+        .keypad-button:hover {
+            background-color: #e0e0e0;
+        }
+        .keypad-button.space {
+            grid-column: span 2;
+            line-height: 28px; /* Adjust for better vertical alignment */
+        }
+    </style>
+</head>
+<body>
+    <div id="chat-container">
+        <h1>Chat App</h1>
+        <div id="room-selection">
+            <input type="text" id="nickname" placeholder="Enter your nickname">
+            <div id="rooms">
+                <button onclick="joinRoom('A')">Chat Room A</button>
+                <button onclick="joinRoom('B')">Chat Room B</button>
+                <button onclick="joinRoom('C')">Chat Room C</button>
+                <button onclick="joinRoom('D')">Chat Room D</button>
+            </div>
+        </div>
+        <div id="chat" style="display: none;">
+            <button id="leave-room-button" onclick="leaveRoom()">Leave Room</button>
+            <div id="messages"></div>
+            <div id="input-container">
+                <input type="text" id="input" placeholder="Type a message">
+                <button id="send-button" onclick="sendMessage()">Send</button>
+            </div>
+            <div id="canvas-container">
+                <canvas id="canvas" width="600" height="400"></canvas>
+            </div>
+            <button id="send-drawing-button" onclick="sendDrawing()">Send Drawing</button>
+            <button id="clear-canvas-button" onclick="clearCanvas()">Clear Canvas</button>
+            <button id="toggle-keypad-button" onclick="toggleKeypad()">Toggle Keypad</button>
+            <button id="copy-canvas-button" onclick="copyNewestCanvas()">Copy Newest Canvas</button>
+            <div id="keypad" style="display: none;">
+                <span class="keypad-button" onclick="appendToInput('Q')">Q</span>
+                <span class="keypad-button" onclick="appendToInput('W')">W</span>
+                <span class="keypad-button" onclick="appendToInput('E')">E</span>
+                <span class="keypad-button" onclick="appendToInput('R')">R</span>
+                <span class="keypad-button" onclick="appendToInput('T')">T</span>
+                <span class="keypad-button" onclick="appendToInput('Y')">Y</span>
+                <span class="keypad-button" onclick="appendToInput('U')">U</span>
+                <span class="keypad-button" onclick="appendToInput('I')">I</span>
+                <span class="keypad-button" onclick="appendToInput('O')">O</span>
+                <span class="keypad-button" onclick="appendToInput('P')">P</span>
+                <span class="keypad-button" onclick="appendToInput('A')">A</span>
+                <span class="keypad-button" onclick="appendToInput('S')">S</span>
+                <span class="keypad-button" onclick="appendToInput('D')">D</span>
+                <span class="keypad-button" onclick="appendToInput('F')">F</span>
+                <span class="keypad-button" onclick="appendToInput('G')">G</span>
+                <span class="keypad-button" onclick="appendToInput('H')">H</span>
+                <span class="keypad-button" onclick="appendToInput('J')">J</span>
+                <span class="keypad-button" onclick="appendToInput('K')">K</span>
+                <span class="keypad-button" onclick="appendToInput('L')">L</span>
+                <span class="keypad-button" onclick="appendToInput('Z')">Z</span>
+                <span class="keypad-button" onclick="appendToInput('X')">X</span>
+                <span class="keypad-button" onclick="appendToInput('C')">C</span>
+                <span class="keypad-button" onclick="appendToInput('V')">V</span>
+                <span class="keypad-button" onclick="appendToInput('B')">B</span>
+                <span class="keypad-button" onclick="appendToInput('N')">N</span>
+                <span class="keypad-button" onclick="appendToInput('M')">M</span>
+                <span class="keypad-button space" onclick="appendToInput(' ')">SPACE</span>
+            </div>
+        </div>
+    </div>
+    <script>
+        let websocket;
+        let nickname;
+        let room;
+        let canvas;
+        let ctx;
+        const userColors = {};
+        let fetchInterval;
+
+        async function fetchUserCounts() {
+            const rooms = ["A", "B", "C", "D"];
+            for (const room of rooms) {
+                const response = await fetch(`/users/${room}`);
+                const data = await response.json();
+                const button = document.querySelector(`button[onclick="joinRoom('${room}')"]`);
+                if (button && !data.error) {
+                    button.innerText = `Chat Room ${room} (${data.users}/16)`;
+                }
+            }
+        }
+
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        function getUserColor(user) {
+            if (!userColors[user]) {
+                userColors[user] = getRandomColor();
+            }
+            return userColors[user];
+        }
+
+        function joinRoom(selectedRoom) {
+            nickname = document.getElementById("nickname").value;
+            room = selectedRoom;
+
+            if (!nickname || !room) {
+                alert("Please enter a nickname and select a room.");
+                return;
+            }
+
+            if (websocket) {
+                websocket.close();
+            }
+
+            document.getElementById("room-selection").style.display = "none";
+            document.getElementById("chat").style.display = "block";
+            if (fetchInterval) {
+                clearInterval(fetchInterval);
+            }
+            websocket = new WebSocket(`ws://localhost:8082/ws/${room}/${nickname}`);
+            websocket.onmessage = function(event) {
+                const messages = document.getElementById("messages");
+                const data = event.data;
+                const atBottom = messages.scrollHeight - messages.clientHeight <= messages.scrollTop + 1;
+                try {
+                    const parsedData = JSON.parse(data);
+                    if (parsedData.type === "drawing") {
+                        const img = new Image();
+                        img.src = parsedData.data;
+                        const drawingMessage = document.createElement("div");
+                        drawingMessage.classList.add("drawing-message", "message");
+                        drawingMessage.style.borderColor = getUserColor(parsedData.sender);
+                        drawingMessage.innerHTML = `<span class="sender" style="background-color:${getUserColor(parsedData.sender)};">${parsedData.sender}</span>`;
+                        drawingMessage.appendChild(img);
+                        messages.appendChild(drawingMessage);
+                    } else {
+                        const message = document.createElement("div");
+                        message.classList.add("message");
+                        message.style.borderColor = getUserColor(parsedData.sender);
+                        message.innerHTML = `<span class="sender" style="background-color:${getUserColor(parsedData.sender)};">${parsedData.sender}</span> ${parsedData.message}`;
+                        messages.appendChild(message);
+                    }
+                } catch (e) {
+                    const systemMessage = document.createElement("div");
+                    systemMessage.classList.add("system-message");
+                    systemMessage.textContent = event.data;
+                    messages.appendChild(systemMessage);
+                }
+                if (atBottom) {
+                    messages.scrollTop = messages.scrollHeight;
+                }
+            };
+
+            websocket.onopen = function() {
+                const messages = document.getElementById("messages");
+                messages.innerHTML = "";
+                const systemMessage = document.createElement("div");
+                systemMessage.classList.add("system-message");
+                systemMessage.textContent = `System: You have joined room ${room}`;
+                messages.appendChild(systemMessage);
+                messages.scrollTop = messages.scrollHeight;
+            };
+
+            websocket.onclose = function() {
+                const messages = document.getElementById("messages");
+                const systemMessage = document.createElement("div");
+                systemMessage.classList.add("system-message");
+                systemMessage.textContent = "System: You have left the room";
+                messages.appendChild(systemMessage);
+                messages.scrollTop = messages.scrollHeight;
+                document.getElementById("room-selection").style.display = "block";
+                document.getElementById("chat").style.display = "none";
+                fetchInterval = setInterval(fetchUserCounts, 5000); // Resume periodic room checks
+            };
+
+            websocket.onerror = function() {
+                const messages = document.getElementById("messages");
+                const systemMessage = document.createElement("div");
+                systemMessage.classList.add("system-message");
+                systemMessage.textContent = "System: Connection error";
+                messages.appendChild(systemMessage);
+                messages.scrollTop = messages.scrollHeight;
+            };
+
+            canvas = document.getElementById("canvas");
+            ctx = canvas.getContext("2d");
+            canvas.addEventListener("mousedown", startDrawing);
+            canvas.addEventListener("mouseup", stopDrawing);
+            canvas.addEventListener("mousemove", draw);
+
+            document.getElementById("input").addEventListener("keydown", function(event) {
+                if (event.key === "Enter") {
+                    sendMessage();
+                }
+            });
+        }
+
+        function leaveRoom() {
+            if (websocket) {
+                websocket.close();
+            }
+        }
+
+        function sendMessage() {
+            const input = document.getElementById("input");
+            websocket.send(JSON.stringify({ type: "message", message: input.value }));
+            input.value = "";
+        }
+
+        function sendDrawing() {
+            const drawingData = canvas.toDataURL();
+            websocket.send(JSON.stringify({ type: "drawing", data: drawingData }));
+            clearCanvas();
+        }
+
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function toggleKeypad() {
+            const keypad = document.getElementById("keypad");
+            if (keypad.style.display === "none") {
+                keypad.style.display = "block";
+            } else {
+                keypad.style.display = "none";
+            }
+        }
+
+        function appendToInput(character) {
+            const input = document.getElementById("input");
+            input.value += character;
+        }
+
+        function copyNewestCanvas() {
+            const messages = document.getElementById("messages");
+            const drawings = messages.getElementsByClassName("drawing-message");
+            if (drawings.length > 0) {
+                const lastDrawing = drawings[drawings.length - 1].getElementsByTagName("img")[0];
+                const img = new Image();
+                img.src = lastDrawing.src;
+                img.onload = function() {
+                    clearCanvas();
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                };
+            }
+        }
+
+        let drawing = false;
+
+        function startDrawing(event) {
+            drawing = true;
+            ctx.beginPath();
+            draw(event);  // Start drawing immediately
+        }
+
+        function stopDrawing() {
+            drawing = false;
+            ctx.beginPath();  // Reset the path so new drawings don't connect to the old ones
+        }
+
+        function draw(event) {
+            if (!drawing) return;
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            ctx.lineWidth = 2;
+            ctx.lineCap = "round";
+            ctx.strokeStyle = "#000000";
+            ctx.lineTo((event.clientX - rect.left) * scaleX, (event.clientY - rect.top) * scaleY);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo((event.clientX - rect.left) * scaleX, (event.clientY - rect.top) * scaleY);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchUserCounts();
+            fetchInterval = setInterval(fetchUserCounts, 5000); // Update every 5 seconds
+        });
+    </script>
+</body>
+</html>
