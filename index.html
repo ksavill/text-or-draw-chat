@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat App</title>
+    <title>PictoChat</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #e6e6e6;
+            font-family: 'Press Start 2P', cursive;
+            background-color: #c0c0c0;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -15,93 +17,162 @@
             margin: 0;
         }
         #chat-container {
-            width: 800px;
-            background-color: #fff;
-            border: 2px solid #000;
+            width: 600px;
+            background-color: #ffffff;
+            border: 4px solid #000000;
             border-radius: 10px;
             padding: 20px;
+            box-shadow: 5px 5px 10px rgba(0,0,0,0.3);
         }
         h1 {
             text-align: center;
             margin: 0;
+            font-size: 1.5em;
+        }
+        #room-selection {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #nickname {
+            padding: 10px;
+            border: 2px solid #000000;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 1em;
+            width: 80%;
+        }
+        #rooms {
+            display: flex;
+            flex-direction: column;
+            width: 80%;
+        }
+        .room-button {
+            padding: 10px 20px;
+            margin-bottom: 10px;
+            border: 2px solid #000000;
+            background-color: #e0e0e0;
+            color: #000000;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Press Start 2P', cursive;
+        }
+        .room-button:hover {
+            background-color: #d0d0d0;
+        }
+        .room-info {
+            display: flex;
+            align-items: center;
+        }
+        .room-info span {
+            margin-left: 10px;
+        }
+        #chat {
+            display: none;
+            flex-direction: column;
+            align-items: center;
         }
         #messages {
-            border: 2px solid #000;
-            height: 200px;
+            border: 2px solid #000000;
+            height: 500px;
             overflow-y: scroll;
             padding: 10px;
-            background-color: #fff;
+            background-color: #ffffff;
             border-radius: 5px;
             margin-bottom: 10px;
+            font-size: 0.9em;
+            width: 100%;
+            font-family: 'Press Start 2P', cursive;
         }
         #input-container {
             display: flex;
             margin-top: 10px;
+            width: 100%;
         }
         #input {
             flex: 1;
             padding: 10px;
-            border: 2px solid #000;
+            border: 2px solid #000000;
             border-radius: 5px;
             margin-right: 10px;
+            font-size: 1em;
+            font-family: 'Press Start 2P', cursive;
         }
         #send-button {
             padding: 10px 20px;
-            border: 2px solid #000;
-            background-color: #fff;
-            color: #000;
+            border: 2px solid #000000;
+            background-color: #e0e0e0;
+            color: #000000;
             border-radius: 5px;
             cursor: pointer;
+            font-size: 1em;
+            font-family: 'Press Start 2P', cursive;
         }
-        #send-button:hover {
-            background-color: #e0e0e0;
+        #send-button:disabled {
+            cursor: not-allowed;
+            background-color: #d0d0d0;
         }
-        #canvas-container {
-            position: relative;
-            border: 2px solid #000;
-            border-radius: 5px;
-            overflow: hidden;
-            margin-top: 10px;
-        }
-        #canvas {
-            display: block;
-            width: 100%;
-        }
-        #send-drawing-button, #clear-canvas-button, #toggle-keypad-button, #copy-canvas-button, #leave-room-button {
-            margin-top: 10px;
-            padding: 10px 20px;
-            border: 2px solid #000;
-            background-color: #fff;
-            color: #000;
-            border-radius: 5px;
-            cursor: pointer;
-            display: inline-block;
-        }
-        #send-drawing-button:hover, #clear-canvas-button:hover, #toggle-keypad-button:hover, #copy-canvas-button:hover, #leave-room-button:hover {
-            background-color: #e0e0e0;
-        }
-        .drawing-message {
-            margin: 10px 0;
+        #send-button:hover:enabled {
+            background-color: #d0d0d0;
         }
         .message {
             border-radius: 5px;
             margin-bottom: 10px;
             padding: 10px;
             position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            border: 2px solid rgba(0, 0, 0, 0.1);
         }
         .message .sender {
-            position: absolute;
-            top: -10px;
-            left: -10px;
             padding: 5px 10px;
             background-color: rgba(0, 0, 0, 0.1);
             border-radius: 5px 0 5px 0;
             font-weight: bold;
+            margin-bottom: 5px;
         }
         .system-message {
             text-align: center;
             font-style: italic;
             color: #888;
+        }
+        #canvas-container {
+            position: relative;
+            border: 2px solid #000000;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 10px;
+            width: 100%;
+        }
+        #canvas {
+            display: block;
+            width: 100%;
+            border: 2px solid #000000;
+        }
+        #drawing-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            width: 100%;
+        }
+        #drawing-buttons button {
+            padding: 10px 20px;
+            border: 2px solid #000000;
+            background-color: #e0e0e0;
+            color: #000000;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: .5em;
+            font-family: 'Press Start 2P', cursive;
+        }
+        #drawing-buttons button:hover {
+            background-color: #d0d0d0;
         }
         #keypad {
             margin-top: 10px;
@@ -112,48 +183,78 @@
         .keypad-button {
             width: 30px;
             height: 30px;
-            border: 2px solid #000;
-            background-color: #fff;
+            border: 2px solid #000000;
+            background-color: #ffffff;
             text-align: center;
             line-height: 30px;
             cursor: pointer;
             display: inline-block;
+            font-size: 1em;
+            font-family: 'Press Start 2P', cursive;
         }
         .keypad-button:hover {
             background-color: #e0e0e0;
         }
         .keypad-button.space {
             grid-column: span 2;
-            line-height: 28px; /* Adjust for better vertical alignment */
+            line-height: 28px; 
         }
     </style>
 </head>
 <body>
     <div id="chat-container">
-        <h1>Chat App</h1>
+        <h1>PictoChat</h1>
         <div id="room-selection">
             <input type="text" id="nickname" placeholder="Enter your nickname">
             <div id="rooms">
-                <button onclick="joinRoom('A')">Chat Room A</button>
-                <button onclick="joinRoom('B')">Chat Room B</button>
-                <button onclick="joinRoom('C')">Chat Room C</button>
-                <button onclick="joinRoom('D')">Chat Room D</button>
+                <button class="room-button" onclick="joinRoom('A')">
+                    <span class="room-info">
+                        <img src="chat-icon.png" alt="Chat Icon" width="20">
+                        Chat Room A
+                    </span>
+                    <span>3/16</span>
+                </button>
+                <button class="room-button" onclick="joinRoom('B')">
+                    <span class="room-info">
+                        <img src="chat-icon.png" alt="Chat Icon" width="20">
+                        Chat Room B
+                    </span>
+                    <span>1/16</span>
+                </button>
+                <button class="room-button" onclick="joinRoom('C')">
+                    <span class="room-info">
+                        <img src="chat-icon.png" alt="Chat Icon" width="20">
+                        Chat Room C
+                    </span>
+                    <span>0/16</span>
+                </button>
+                <button class="room-button" onclick="joinRoom('D')">
+                    <span class="room-info">
+                        <img src="chat-icon.png" alt="Chat Icon" width="20">
+                        Chat Room D
+                    </span>
+                    <span>0/16</span>
+                </button>
             </div>
         </div>
-        <div id="chat" style="display: none;">
-            <button id="leave-room-button" onclick="leaveRoom()">Leave Room</button>
+        <div id="chat">
+            <button class="room-button" onclick="leaveRoom()">Leave Room</button>
             <div id="messages"></div>
             <div id="input-container">
                 <input type="text" id="input" placeholder="Type a message">
-                <button id="send-button" onclick="sendMessage()">Send</button>
+                <button id="send-button" onclick="sendMessage()" disabled>Send</button>
             </div>
             <div id="canvas-container">
                 <canvas id="canvas" width="600" height="400"></canvas>
             </div>
-            <button id="send-drawing-button" onclick="sendDrawing()">Send Drawing</button>
-            <button id="clear-canvas-button" onclick="clearCanvas()">Clear Canvas</button>
-            <button id="toggle-keypad-button" onclick="toggleKeypad()">Toggle Keypad</button>
-            <button id="copy-canvas-button" onclick="copyNewestCanvas()">Copy Newest Canvas</button>
+            <div id="drawing-buttons">
+                <button id="send-drawing-button" onclick="sendDrawing()">Send Drawing</button>
+                <button id="clear-canvas-button" onclick="clearCanvas()">Clear Canvas</button>
+                <button id="toggle-keypad-button" onclick="toggleKeypad()">Toggle Keypad</button>
+                <button id="copy-canvas-button" onclick="copyNewestCanvas()">Copy Newest Canvas</button>
+                <button id="drawing-mode-button" onclick="setDrawingMode()">Drawing Mode</button>
+                <button id="erase-mode-button" onclick="setEraseMode()">Erase Mode</button>
+            </div>
             <div id="keypad" style="display: none;">
                 <span class="keypad-button" onclick="appendToInput('Q')">Q</span>
                 <span class="keypad-button" onclick="appendToInput('W')">W</span>
@@ -236,7 +337,7 @@
             }
 
             document.getElementById("room-selection").style.display = "none";
-            document.getElementById("chat").style.display = "block";
+            document.getElementById("chat").style.display = "flex"; 
             if (fetchInterval) {
                 clearInterval(fetchInterval);
             }
@@ -245,6 +346,7 @@
                 const messages = document.getElementById("messages");
                 const data = event.data;
                 const atBottom = messages.scrollHeight - messages.clientHeight <= messages.scrollTop + 1;
+                console.log(`At Bottom: ${atBottom}`);
                 try {
                     const parsedData = JSON.parse(data);
                     if (parsedData.type === "drawing") {
@@ -256,21 +358,32 @@
                         drawingMessage.innerHTML = `<span class="sender" style="background-color:${getUserColor(parsedData.sender)};">${parsedData.sender}</span>`;
                         drawingMessage.appendChild(img);
                         messages.appendChild(drawingMessage);
+
+                        img.onload = function() {
+                            if (atBottom) {
+                                messages.scrollTop = messages.scrollHeight;
+                            }
+                        };
                     } else {
                         const message = document.createElement("div");
                         message.classList.add("message");
                         message.style.borderColor = getUserColor(parsedData.sender);
                         message.innerHTML = `<span class="sender" style="background-color:${getUserColor(parsedData.sender)};">${parsedData.sender}</span> ${parsedData.message}`;
                         messages.appendChild(message);
+
+                        if (atBottom) {
+                            messages.scrollTop = messages.scrollHeight;
+                        }
                     }
                 } catch (e) {
                     const systemMessage = document.createElement("div");
                     systemMessage.classList.add("system-message");
                     systemMessage.textContent = event.data;
                     messages.appendChild(systemMessage);
-                }
-                if (atBottom) {
-                    messages.scrollTop = messages.scrollHeight;
+
+                    if (atBottom) {
+                        messages.scrollTop = messages.scrollHeight;
+                    }
                 }
             };
 
@@ -291,9 +404,9 @@
                 systemMessage.textContent = "System: You have left the room";
                 messages.appendChild(systemMessage);
                 messages.scrollTop = messages.scrollHeight;
-                document.getElementById("room-selection").style.display = "block";
+                document.getElementById("room-selection").style.display = "flex"; 
                 document.getElementById("chat").style.display = "none";
-                fetchInterval = setInterval(fetchUserCounts, 5000); // Resume periodic room checks
+                fetchInterval = setInterval(fetchUserCounts, 5000);
             };
 
             websocket.onerror = function() {
@@ -312,9 +425,13 @@
             canvas.addEventListener("mousemove", draw);
 
             document.getElementById("input").addEventListener("keydown", function(event) {
-                if (event.key === "Enter") {
+                if (event.key === "Enter" && document.getElementById("input").value.trim() !== "") {
                     sendMessage();
                 }
+            });
+
+            document.getElementById("input").addEventListener("input", function() {
+                document.getElementById("send-button").disabled = document.getElementById("input").value.trim() === "";
             });
         }
 
@@ -326,8 +443,11 @@
 
         function sendMessage() {
             const input = document.getElementById("input");
-            websocket.send(JSON.stringify({ type: "message", message: input.value }));
-            input.value = "";
+            if (input.value.trim() !== "") {
+                websocket.send(JSON.stringify({ type: "message", message: input.value.trim() }));
+                input.value = "";
+                document.getElementById("send-button").disabled = true;
+            }
         }
 
         function sendDrawing() {
@@ -352,6 +472,7 @@
         function appendToInput(character) {
             const input = document.getElementById("input");
             input.value += character;
+            document.getElementById("send-button").disabled = input.value.trim() === "";
         }
 
         function copyNewestCanvas() {
@@ -369,16 +490,17 @@
         }
 
         let drawing = false;
+        let isErasing = false;
 
         function startDrawing(event) {
             drawing = true;
             ctx.beginPath();
-            draw(event);  // Start drawing immediately
+            draw(event);
         }
 
         function stopDrawing() {
             drawing = false;
-            ctx.beginPath();  // Reset the path so new drawings don't connect to the old ones
+            ctx.beginPath();
         }
 
         function draw(event) {
@@ -388,16 +510,24 @@
             const scaleY = canvas.height / rect.height;
             ctx.lineWidth = 2;
             ctx.lineCap = "round";
-            ctx.strokeStyle = "#000000";
+            ctx.strokeStyle = isErasing ? "#ffffff" : "#000000";
             ctx.lineTo((event.clientX - rect.left) * scaleX, (event.clientY - rect.top) * scaleY);
             ctx.stroke();
             ctx.beginPath();
             ctx.moveTo((event.clientX - rect.left) * scaleX, (event.clientY - rect.top) * scaleY);
         }
 
+        function setDrawingMode() {
+            isErasing = false;
+        }
+
+        function setEraseMode() {
+            isErasing = true;
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             fetchUserCounts();
-            fetchInterval = setInterval(fetchUserCounts, 5000); // Update every 5 seconds
+            fetchInterval = setInterval(fetchUserCounts, 5000);
         });
     </script>
 </body>
