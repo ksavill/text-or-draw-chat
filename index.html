@@ -341,7 +341,7 @@
             if (fetchInterval) {
                 clearInterval(fetchInterval);
             }
-            websocket = new WebSocket(`ws://localhost:8082/ws/${room}/${nickname}`);
+            websocket = new WebSocket(`/ws/${room}/${nickname}`);
             websocket.onmessage = function(event) {
                 const messages = document.getElementById("messages");
                 const data = event.data;
@@ -423,6 +423,20 @@
             canvas.addEventListener("mousedown", startDrawing);
             canvas.addEventListener("mouseup", stopDrawing);
             canvas.addEventListener("mousemove", draw);
+
+            // Disable scrolling on touch devices when interacting with the canvas
+            canvas.addEventListener("touchstart", function(event) {
+                event.preventDefault();
+                startDrawing(event.touches[0]);
+            });
+            canvas.addEventListener("touchend", function(event) {
+                event.preventDefault();
+                stopDrawing(event.touches[0]);
+            });
+            canvas.addEventListener("touchmove", function(event) {
+                event.preventDefault();
+                draw(event.touches[0]);
+            });
 
             document.getElementById("input").addEventListener("keydown", function(event) {
                 if (event.key === "Enter" && document.getElementById("input").value.trim() !== "") {
