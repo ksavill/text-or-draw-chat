@@ -1,5 +1,7 @@
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
+from starlette.responses import FileResponse
 from fastapi.responses import HTMLResponse
+import os
 import json
 import uvicorn
 
@@ -11,6 +13,38 @@ rooms = {"A": [], "B": [], "C": [], "D": []}
 async def get():
     with open("index.html", "r") as file:
         return HTMLResponse(content=file.read())
+    
+@app.get("/icon")
+async def get_icon():
+    icon_path = "chat-icon.png"
+    if os.path.exists(icon_path):
+        return FileResponse(icon_path)
+    else:
+        raise HTTPException(status_code=404, detail="Icon not found")
+
+@app.get("/audio-ping")
+async def get_audio():
+    audio_path = "ping.mp3"
+    if os.path.exists(audio_path):
+        return FileResponse(audio_path)
+    else:
+        raise HTTPException(status_code=404, detail="Audio not found")
+    
+@app.get("/audio-user-joined")
+async def get_audio_user_joined():
+    audio_path = "audio-user-joined.mp3"
+    if os.path.exists(audio_path):
+        return FileResponse(audio_path)
+    else:
+        raise HTTPException(status_code=404, detail="Audio not found")
+    
+@app.get("/audio-user-left")
+async def get_audio_user_left():
+    audio_path = "audio-user-left.mp3"
+    if os.path.exists(audio_path):
+        return FileResponse(audio_path)
+    else:
+        raise HTTPException(status_code=404, detail="Audio not found")
 
 @app.get("/users/{room}")
 async def get_users(room: str):

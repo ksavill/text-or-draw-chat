@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PictoChat</title>
+    <link rel="icon" href="/icon" type="image/x-icon">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
@@ -209,28 +210,24 @@
             <div id="rooms">
                 <button class="room-button" onclick="joinRoom('A')">
                     <span class="room-info">
-                        <img src="chat-icon.png" alt="Chat Icon" width="20">
                         Chat Room A
                     </span>
                     <span>3/16</span>
                 </button>
                 <button class="room-button" onclick="joinRoom('B')">
                     <span class="room-info">
-                        <img src="chat-icon.png" alt="Chat Icon" width="20">
                         Chat Room B
                     </span>
                     <span>1/16</span>
                 </button>
                 <button class="room-button" onclick="joinRoom('C')">
                     <span class="room-info">
-                        <img src="chat-icon.png" alt="Chat Icon" width="20">
                         Chat Room C
                     </span>
                     <span>0/16</span>
                 </button>
                 <button class="room-button" onclick="joinRoom('D')">
                     <span class="room-info">
-                        <img src="chat-icon.png" alt="Chat Icon" width="20">
                         Chat Room D
                     </span>
                     <span>0/16</span>
@@ -286,6 +283,9 @@
             </div>
         </div>
     </div>
+    <audio id="ping-sound" src="/audio-ping"></audio>
+    <audio id="user-joined" src="/audio-user-joined"></audio>
+    <audio id="user-left" src="/audio-user-left"></audio>
     <script>
         let websocket;
         let nickname;
@@ -294,6 +294,8 @@
         let ctx;
         const userColors = {};
         let fetchInterval;
+        let unreadMessages = 0;
+        const originalTitle = document.title;
 
         async function fetchUserCounts() {
             const rooms = ["A", "B", "C", "D"];
@@ -375,11 +377,24 @@
                             messages.scrollTop = messages.scrollHeight;
                         }
                     }
+
+                    playPingSound(); // Play a sound if the tab is not focused
+                    
+                    if (document.hidden) {
+                        unreadMessages++;
+                        document.title = `(${unreadMessages}) New messages - PictoChat`;
+                    }
                 } catch (e) {
                     const systemMessage = document.createElement("div");
                     systemMessage.classList.add("system-message");
                     systemMessage.textContent = event.data;
                     messages.appendChild(systemMessage);
+
+                    if (event.data.includes("joined")) {
+                        playUserJoinedSound();
+                    } else if (event.data.includes("left")) {
+                        playUserLeftSound();
+                    }
 
                     if (atBottom) {
                         messages.scrollTop = messages.scrollHeight;
@@ -404,9 +419,12 @@
                 systemMessage.textContent = "System: You have left the room";
                 messages.appendChild(systemMessage);
                 messages.scrollTop = messages.scrollHeight;
+                messages.innerHTML = "";
                 document.getElementById("room-selection").style.display = "flex"; 
                 document.getElementById("chat").style.display = "none";
                 fetchInterval = setInterval(fetchUserCounts, 5000);
+                unreadMessages = 0;
+                document.title = originalTitle;
             };
 
             websocket.onerror = function() {
@@ -538,6 +556,28 @@
         function setEraseMode() {
             isErasing = true;
         }
+
+        function playPingSound() {
+            const pingSound = document.getElementById("ping-sound");
+            pingSound.play();
+        }
+
+        function playUserJoinedSound() {
+            const userJoinedSound = document.getElementById("user-joined");
+            userJoinedSound.play();
+        }
+
+        function playUserLeftSound() {
+            const userLeftSound = document.getElementById("user-left");
+            userLeftSound.play();
+        }
+
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) {
+                unreadMessages = 0;
+                document.title = originalTitle;
+            }
+        });
 
         document.addEventListener('DOMContentLoaded', () => {
             fetchUserCounts();
