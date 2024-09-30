@@ -177,9 +177,15 @@
         }
         #keypad {
             margin-top: 10px;
-            display: grid;
-            grid-template-columns: repeat(10, 1fr);
-            gap: 2px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+        .keypad-row {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
         }
         .keypad-button {
             width: 30px;
@@ -192,13 +198,14 @@
             display: inline-block;
             font-size: 1em;
             font-family: 'Press Start 2P', cursive;
+            border-radius: 3px; /
         }
         .keypad-button:hover {
             background-color: #e0e0e0;
         }
         .keypad-button.space {
-            grid-column: span 2;
-            line-height: 28px; 
+            width: 100px; 
+            line-height: 28px;
         }
     </style>
 </head>
@@ -253,34 +260,50 @@
                 <button id="erase-mode-button" onclick="setEraseMode()">Erase Mode</button>
             </div>
             <div id="keypad" style="display: none;">
-                <span class="keypad-button" onclick="appendToInput('Q')">Q</span>
-                <span class="keypad-button" onclick="appendToInput('W')">W</span>
-                <span class="keypad-button" onclick="appendToInput('E')">E</span>
-                <span class="keypad-button" onclick="appendToInput('R')">R</span>
-                <span class="keypad-button" onclick="appendToInput('T')">T</span>
-                <span class="keypad-button" onclick="appendToInput('Y')">Y</span>
-                <span class="keypad-button" onclick="appendToInput('U')">U</span>
-                <span class="keypad-button" onclick="appendToInput('I')">I</span>
-                <span class="keypad-button" onclick="appendToInput('O')">O</span>
-                <span class="keypad-button" onclick="appendToInput('P')">P</span>
-                <span class="keypad-button" onclick="appendToInput('A')">A</span>
-                <span class="keypad-button" onclick="appendToInput('S')">S</span>
-                <span class="keypad-button" onclick="appendToInput('D')">D</span>
-                <span class="keypad-button" onclick="appendToInput('F')">F</span>
-                <span class="keypad-button" onclick="appendToInput('G')">G</span>
-                <span class="keypad-button" onclick="appendToInput('H')">H</span>
-                <span class="keypad-button" onclick="appendToInput('J')">J</span>
-                <span class="keypad-button" onclick="appendToInput('K')">K</span>
-                <span class="keypad-button" onclick="appendToInput('L')">L</span>
-                <span class="keypad-button" onclick="appendToInput('Z')">Z</span>
-                <span class="keypad-button" onclick="appendToInput('X')">X</span>
-                <span class="keypad-button" onclick="appendToInput('C')">C</span>
-                <span class="keypad-button" onclick="appendToInput('V')">V</span>
-                <span class="keypad-button" onclick="appendToInput('B')">B</span>
-                <span class="keypad-button" onclick="appendToInput('N')">N</span>
-                <span class="keypad-button" onclick="appendToInput('M')">M</span>
-                <span class="keypad-button space" onclick="appendToInput(' ')">SPACE</span>
+                <!-- First Row: Q - P -->
+                <div class="keypad-row">
+                    <span class="keypad-button" onclick="appendToInput('Q')">Q</span>
+                    <span class="keypad-button" onclick="appendToInput('W')">W</span>
+                    <span class="keypad-button" onclick="appendToInput('E')">E</span>
+                    <span class="keypad-button" onclick="appendToInput('R')">R</span>
+                    <span class="keypad-button" onclick="appendToInput('T')">T</span>
+                    <span class="keypad-button" onclick="appendToInput('Y')">Y</span>
+                    <span class="keypad-button" onclick="appendToInput('U')">U</span>
+                    <span class="keypad-button" onclick="appendToInput('I')">I</span>
+                    <span class="keypad-button" onclick="appendToInput('O')">O</span>
+                    <span class="keypad-button" onclick="appendToInput('P')">P</span>
+                </div>
+            
+                <!-- Second Row: A - L -->
+                <div class="keypad-row">
+                    <span class="keypad-button" onclick="appendToInput('A')">A</span>
+                    <span class="keypad-button" onclick="appendToInput('S')">S</span>
+                    <span class="keypad-button" onclick="appendToInput('D')">D</span>
+                    <span class="keypad-button" onclick="appendToInput('F')">F</span>
+                    <span class="keypad-button" onclick="appendToInput('G')">G</span>
+                    <span class="keypad-button" onclick="appendToInput('H')">H</span>
+                    <span class="keypad-button" onclick="appendToInput('J')">J</span>
+                    <span class="keypad-button" onclick="appendToInput('K')">K</span>
+                    <span class="keypad-button" onclick="appendToInput('L')">L</span>
+                </div>
+            
+                <!-- Third Row: Z - M -->
+                <div class="keypad-row">
+                    <span class="keypad-button" onclick="appendToInput('Z')">Z</span>
+                    <span class="keypad-button" onclick="appendToInput('X')">X</span>
+                    <span class="keypad-button" onclick="appendToInput('C')">C</span>
+                    <span class="keypad-button" onclick="appendToInput('V')">V</span>
+                    <span class="keypad-button" onclick="appendToInput('B')">B</span>
+                    <span class="keypad-button" onclick="appendToInput('N')">N</span>
+                    <span class="keypad-button" onclick="appendToInput('M')">M</span>
+                </div>
+            
+                <!-- Fourth Row: SPACE -->
+                <div class="keypad-row">
+                    <span class="keypad-button space" onclick="appendToInput(' ')">SPACE</span>
+                </div>
             </div>
+            
         </div>
     </div>
     <audio id="ping-sound" src="/audio-ping"></audio>
