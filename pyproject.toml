@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "text-or-draw-chat"
+version = "0.1.0"
+description = "A browser PictoChat recreation with an experimental stock-DS radio bridge."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+    "msgpack>=1.0,<2",
+    "pillow>=10,<13",
+    "websockets>=14,<17",
+]
+
+[project.optional-dependencies]
+dev = [
+    "httpx>=0.27,<1",
+    "pytest>=8,<10",
+]
+
+[project.scripts]
+pictochat-server = "backend.app:main"
+pictochat-bridge = "bridge.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["backend*", "bridge*", "pictochat*"]
+exclude = ["tests*"]
+
+[tool.setuptools.package-data]
+backend = [
+    "web/*.html",
+    "web/*.json",
+    "web/*.js",
+    "web/assets/*",
+    "web/assets/audio/*",
+    "web/assets/fonts/*",
+    "web/assets/icons/*",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"

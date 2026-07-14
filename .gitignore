@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+*.egg-info/
+build/
+dist/
+
+# Pinned third-party firmware is fetched locally because its upstream repository
+# doesn't currently grant a redistribution licence.
+hardware/.upstream/

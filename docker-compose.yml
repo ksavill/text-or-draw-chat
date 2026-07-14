@@ -1,0 +1,7 @@
+services:
+  pictochat:
+    build: .
+    ports:
+      - "8082:8082"   # web / WebSocket
+      - "8083:8083"   # raw-TCP adapter (radio bridge / lightweight clients)
+    restart: unless-stopped

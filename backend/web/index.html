@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#15151b">
+    <title>PictoChat</title>
+    <link rel="icon" href="/icon" type="image/x-icon">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="stylesheet" href="/assets/app.css">
+</head>
+<body>
+    <div id="ds">
+        <div class="frame">
+            <div class="screen" id="top-screen">
+                <div id="logo-header">
+                    <span class="wordmark">PICTOCHAT</span>
+                    <span id="room-badge"></span>
+                </div>
+                <div id="ticker"><span id="ticker-text">Welcome to PictoChat.</span></div>
+                <div id="logo-view">
+                    <div id="speech-bubble"><i></i><i></i><i></i><i></i></div>
+                    <div class="logo">PICTOCHAT</div>
+                    <div class="tagline">enter a name and pick a room below</div>
+                    <div id="ds-bridge-status" data-state="checking" role="status" aria-live="polite"
+                         title="Checking whether the physical Nintendo DS bridge is connected.">
+                        <span class="status-dot" aria-hidden="true"></span>
+                        <span id="ds-bridge-label">DS HARDWARE: CHECKING...</span>
+                    </div>
+                </div>
+                <div id="feed-view">
+                    <div id="feed"></div>
+                </div>
+            </div>
+        </div>
+        <div id="hinge"></div>
+        <div class="frame">
+            <div class="screen" id="bottom-screen">
+
+                <div class="view" id="select-view" style="display:flex; flex-direction:column;">
+                    <div id="select-header"><span>Choose a Chat Room.</span><span>4 rooms / 16 users</span></div>
+                    <div id="select-body">
+                        <div id="name-row">
+                            <label for="nickname">NAME</label>
+                            <input type="text" id="nickname" maxlength="10" placeholder="up to 10 chars" autocomplete="off">
+                        </div>
+                        <div id="join-hint"></div>
+                        <button class="room-row" data-room="A">
+                            <span class="room-letter">A</span><span class="room-title">Chat Room A</span>
+                            <span class="room-pips"></span><span class="room-count">-/16</span>
+                        </button>
+                        <button class="room-row" data-room="B">
+                            <span class="room-letter">B</span><span class="room-title">Chat Room B</span>
+                            <span class="room-pips"></span><span class="room-count">-/16</span>
+                        </button>
+                        <button class="room-row" data-room="C">
+                            <span class="room-letter">C</span><span class="room-title">Chat Room C</span>
+                            <span class="room-pips"></span><span class="room-count">-/16</span>
+                        </button>
+                        <button class="room-row" data-room="D">
+                            <span class="room-letter">D</span><span class="room-title">Chat Room D</span>
+                            <span class="room-pips"></span><span class="room-count">-/16</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="view" id="chat-view">
+                    <div id="rail">
+                        <div id="rail-room" title="Current room">A</div>
+                        <button class="rail-btn on" id="pen-btn" title="Pen">&#x270E;</button>
+                        <button class="rail-btn" id="erase-btn" title="Eraser">&#x25E9;</button>
+                        <button class="rail-btn" id="size-btn" title="Pen size">&#x2022;</button>
+                        <div class="spacer"></div>
+                        <button class="rail-btn" id="exit-button" title="Leave room">&#x25C4;</button>
+                    </div>
+                    <div id="chat-right">
+                        <div id="box-wrap">
+                            <span id="box-tab"></span>
+                            <button id="clear-btn" title="Clear the box">&#x2715;</button>
+                            <div id="canvas-holder">
+                                <canvas id="canvas" width="228" height="80"></canvas>
+                                <div id="caret"></div>
+                                <div id="pen-cursor"></div>
+                            </div>
+                        </div>
+                        <div id="kb">
+                            <div id="kb-tabs"></div>
+                            <div id="kb-keys"></div>
+                            <div id="kb-side">
+                                <button id="send-btn" title="Send message">
+                                    <span class="arrow">&#x25B2;</span><span>SEND</span>
+                                </button>
+                                <button id="copy-btn" title="Copy last message into the box">&#x27F3; COPY</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <audio id="ping-sound" src="/audio-ping" preload="auto"></audio>
+    <audio id="send-sound" src="/audio-send" preload="auto"></audio>
+
+    <script src="/assets/app.js" defer></script>
+</body>
+</html>
